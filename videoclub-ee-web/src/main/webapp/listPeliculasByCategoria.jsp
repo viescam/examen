@@ -15,7 +15,7 @@
         <title>Listado de peliculas por Categoría</title>
     </head>
     <body>
-        <h1>Listado de Películas por Actor</h1>
+        <h1>Listado de Películas por Categoría</h1>
 
         <%
             Categoria cat = (Categoria) request.getAttribute("categoria");

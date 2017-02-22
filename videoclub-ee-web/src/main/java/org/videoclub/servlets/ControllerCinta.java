@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.videoclub.domain.Cinta;
 import org.videoclub.domain.Pelicula;
+import org.videoclub.service.CintaServiceLocal;
 import org.videoclub.service.PeliculaServiceLocal;
 
 @WebServlet(name = "ControllerCinta",
@@ -26,6 +27,8 @@ import org.videoclub.service.PeliculaServiceLocal;
             "/UpdateCinta"})
 public class ControllerCinta extends HttpServlet {
 
+    @EJB
+    private CintaServiceLocal cintaService;
 
     @EJB
     private PeliculaServiceLocal peliculaService;
@@ -107,11 +110,10 @@ public class ControllerCinta extends HttpServlet {
             pelicula = this.peliculaService.findPeliculaById(pelicula);
 
             // Asignamos al request el atributo lista
-            
             //*****IMPORTATE:QUITAR
-            //ArrayList<Cinta> listaArray = new ArrayList<>(pelicula.getCintas());
-            //request.getSession().setAttribute("cintas", listaArray);
-            
+            ArrayList<Cinta> listaArray = new ArrayList<>(pelicula.getCintas());
+            request.getSession().setAttribute("cintas", listaArray);
+
             request.getSession().setAttribute("pelicula", pelicula);
             // Pasamos al RequestDispatcher la pagina a cargar
             RequestDispatcher rd = request.getRequestDispatcher("/listCintas.jsp");
@@ -121,17 +123,16 @@ public class ControllerCinta extends HttpServlet {
             e.printStackTrace();
         }
     }
-    
+
     private void listCintasByPelicula(HttpServletRequest request, HttpServletResponse response) {
         try {
             Pelicula pelicula = (Pelicula) request.getSession().getAttribute("pelicula");
 
             // Asignamos al request el atributo lista
-            
             //*****IMPORTATE:QUITAR
-            //ArrayList<Cinta> listaArray = new ArrayList<>(pelicula.getCintas());
-            //request.getSession().setAttribute("cintas", listaArray);
-            
+            ArrayList<Cinta> listaArray = new ArrayList<>(pelicula.getCintas());
+            request.getSession().setAttribute("cintas", listaArray);
+
             request.getSession().setAttribute("pelicula", pelicula);
             // Pasamos al RequestDispatcher la pagina a cargar
             RequestDispatcher rd = request.getRequestDispatcher("/listCintas.jsp");
@@ -140,8 +141,8 @@ public class ControllerCinta extends HttpServlet {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }    
-    
+    }
+
     private void addCinta(HttpServletRequest request, HttpServletResponse response) {
         //1. Recuperamos los parametros
         String numeroSerie = request.getParameter("numeroSerie");
@@ -149,17 +150,16 @@ public class ControllerCinta extends HttpServlet {
         Pelicula pelicula = (Pelicula) request.getSession().getAttribute("pelicula");
 
         //2. Creamos el objeto
-        
         Cinta cinta = new Cinta(numeroSerie, Integer.valueOf(estado));
-        
+
         //*****IMPORTATE:QUITAR
-        //cinta.setPelicula(pelicula);
+        cinta.setPelicula(pelicula);
 
         try {
             //*****IMPORTATE:QUITAR
-            //cintaService.addCinta(cinta);
-            //pelicula.getCintas().add(cinta);
-            
+            cintaService.addCinta(cinta);
+            pelicula.getCintas().add(cinta);
+
             peliculaService.updatePelicula(pelicula);
         } catch (Exception e) {
             //Informamos cualquier error
@@ -181,11 +181,11 @@ public class ControllerCinta extends HttpServlet {
 
         try {
             // Quitamos primero la cinta de las peliculas
-            
+
             //*****IMPORTATE:QUITAR
-            //pelicula.getCintas().remove(cinta);
-            //this.cintaService.deleteCinta(cinta);
-            
+            pelicula.getCintas().remove(cinta);
+            this.cintaService.deleteCinta(cinta);
+
             this.peliculaService.updatePelicula(pelicula);
         } catch (Exception e) {
             //Informamos cualquier error
@@ -196,8 +196,67 @@ public class ControllerCinta extends HttpServlet {
     }
 
     private void updateCinta(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String accion = request.getParameter("accion");
 
-        
+        if (accion != null && accion.equals("editar")) {
+
+            //1. Recuperamos el id 
+            String idString = request.getParameter("id");
+            if (idString != null) {
+                //2. Creamos el objeto a recuperar
+                int id = Integer.valueOf(idString);
+                Cinta cinta = new Cinta();
+                cinta.setId(id);
+                //Pelicula pelicula = new Pelicula();
+                //pelicula.setId(id);
+                try {
+                    cinta = this.cintaService.findCintaById(cinta);
+                    //pelicula = this.peliculaService.findPeliculaById(pelicula);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+                //3. Compartimos el objeto en alcance request
+                //request.setAttribute("pelicula", pelicula);
+                request.setAttribute("cinta",cinta);
+
+                //4. Redireccionamos a la pagina para editar el objeto
+                request.getRequestDispatcher("/updateCinta.jsp").forward(request, response);
+            }
+        } else if (accion != null && accion.equals("modificar")) {
+
+            //1. Recuperamos los parametros
+            String idString = request.getParameter("id");
+            String numeroSerie = request.getParameter("numeroSerie");
+            String estado = request.getParameter("estado");
+            Pelicula pelicula = (Pelicula) request.getSession().getAttribute("pelicula");
+            
+            //2. Recuperamos la cinta
+            Cinta cinta = new Cinta();
+            cinta.setId(Integer.valueOf(idString));
+
+            try {
+                cinta = this.cintaService.findCintaById(cinta);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            // 3. Asignamos los valores
+            cinta.setNumeroSerie(numeroSerie);
+            cinta.setEstado(Integer.valueOf(estado));
+            cinta.setPelicula(pelicula);
+            
+            try {
+                this.cintaService.updateCinta(cinta);
+            } catch (Exception e) {
+                //Informamos cualquier error
+                e.printStackTrace();
+            }
+            
+
+            listCintas(request, response);
+        }
+
         // A IMPLEMENTAR POR EL ALUMNO
     }
 }
