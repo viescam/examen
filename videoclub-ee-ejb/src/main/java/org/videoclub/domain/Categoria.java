@@ -24,7 +24,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
-@NamedQueries({ @NamedQuery(name = "Categoria.findAll", query= "SELECT c from Categoria c ORDER BY c.id")})
+@NamedQueries({ @NamedQuery(name = "Categoria.findAll", query= "SELECT c from Categoria c ORDER BY c.id")
+        ,@NamedQuery(name = "Categoria.findByName",query= "SELECT c from Categoria c where c.nombre LIKE :nombre")})
 @Table( name = "categorias" )
 public class Categoria implements Serializable {
 

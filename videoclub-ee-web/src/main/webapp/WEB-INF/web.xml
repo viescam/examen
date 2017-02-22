@@ -23,6 +23,7 @@
         <url-pattern>/UpdateCategoria</url-pattern>
         <url-pattern>/DeleteCategoria</url-pattern>
         <url-pattern>/ListPeliculasByCategoria</url-pattern>
+        <url-pattern>/ListCategoriasByName</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>ControllerActor</servlet-name>

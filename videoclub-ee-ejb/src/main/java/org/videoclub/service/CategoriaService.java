@@ -75,4 +75,16 @@ public class CategoriaService implements CategoriaServiceLocal {
             return null;
         }     
     }
+
+    @Override
+    public List listCategoriaBySimilarName(Categoria categoria) {
+        try{
+            return categoriaDao.listCategoriaBySimilarName(categoria);
+        }catch (Throwable t){
+            contexto.setRollbackOnly();
+            return null;
+        }
+    }
+    
+    
 }

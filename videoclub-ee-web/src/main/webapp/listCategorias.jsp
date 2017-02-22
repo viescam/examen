@@ -39,6 +39,10 @@
                 </tr>
                 <% } %>
 	</table>
+        <form action="ListCategoriasByName" method="post">
+            <input type="text" name="nombreCategoria"" />
+            <input type="submit" value="Enviar" />
+        </form>
 	<br>
 	<a href="index.jsp">Regresar al Inicio</a>
 </body>

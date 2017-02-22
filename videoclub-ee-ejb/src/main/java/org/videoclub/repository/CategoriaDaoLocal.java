@@ -25,5 +25,8 @@ public interface CategoriaDaoLocal {
     void deleteCategoria(Categoria categoria);
 
     Categoria findCategoriaById(Categoria categoria);
+
+    List listCategoriaBySimilarName(Categoria categoria);
+
     
 }

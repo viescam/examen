@@ -30,6 +30,8 @@ public class CategoriaDao implements CategoriaDaoLocal {
         return a;
     }
     
+    
+    
     @Override
     public void addCategoria(Categoria categoria) {
       em.persist(categoria);  
@@ -50,4 +52,12 @@ public class CategoriaDao implements CategoriaDaoLocal {
     public Categoria findCategoriaById(Categoria categoria) {
         return em.find(Categoria.class, categoria.getId());
     }
+
+    @Override
+    public List listCategoriaBySimilarName(Categoria categoria) {
+        return em.createNamedQuery("Categoria.findByName",Categoria.class).setParameter("nombre","%"+categoria.getNombre()+"%").getResultList();
+    }
+    
+    
+
 }

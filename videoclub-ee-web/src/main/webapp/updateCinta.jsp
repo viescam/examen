@@ -29,11 +29,6 @@
             <input type="text" name="numeroSerie" style="display: block;" value="${cinta.numeroSerie}"/>
 
             <label for="estado">Estado:</label>
-            <!--<select name="estado" style="display: block;">   
-                <option value="0" >Malo</option>
-                <option value="1" >Regular</option>
-                <option value="2" selected>Bueno</option>          
-            </select>-->
             <select name="estado" style="display: block;">   
             <%
                 Cinta cinta = (Cinta) request.getAttribute("cinta");

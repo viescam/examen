@@ -25,5 +25,7 @@ public interface CategoriaServiceLocal {
     void updateCategoria(Categoria categoria);
 
     Categoria findCategoriaById(Categoria categoria);
+
+    List listCategoriaBySimilarName(Categoria categoria);
     
 }

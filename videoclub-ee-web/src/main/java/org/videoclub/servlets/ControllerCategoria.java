@@ -25,7 +25,8 @@ import org.videoclub.service.CategoriaServiceLocal;
             "/AddCategoria",
             "/DeleteCategoria",
             "/UpdateCategoria",
-            "/ListPeliculasByCategoria"})
+            "/ListPeliculasByCategoria",
+            "/ListCategoriasByName"})
 public class ControllerCategoria extends HttpServlet {
 
     @EJB
@@ -55,6 +56,8 @@ public class ControllerCategoria extends HttpServlet {
             case "/ListPeliculasByCategoria":
                 listPeliculasByCategoria(request,response);
                 break;
+            case "/ListCategoriasByName":
+                listCategoriasByName(request,response);
             default:
                 break;
         }
@@ -226,4 +229,23 @@ public class ControllerCategoria extends HttpServlet {
         }
         
     } 
+
+    private void listCategoriasByName(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            String nombreCategoria = request.getParameter("nombreCategoria");
+            Categoria cat = new Categoria();
+            cat.setNombre(nombreCategoria);
+            // Ejecutamos el metodo y obtenemos la lista
+            List lista = categoriaService.listCategoriaBySimilarName(cat);
+            // Asignamos al request el atributo lista
+            ArrayList<Categoria> listaArray = new ArrayList<>(lista);
+            request.getSession().setAttribute("categorias", listaArray);
+            // Pasamos al RequestDispatcher la pagina a cargar
+            RequestDispatcher rd = request.getRequestDispatcher("/listCategorias.jsp");
+            // Cargamos la pagina
+            rd.forward(request, response);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }
